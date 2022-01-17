@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="scattergatherFlow" doc:id="aa11bfdd-0a70-42a7-a649-43f88f89c5af" >
+		<http:listener doc:name="Listener" doc:id="57a72f3a-4bf9-4fb0-8662-2477a3de8cb9" config-ref="HTTP_Listener_config" path="/all"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="50149661-50f8-4050-ba70-62f6be551d40" >
+			<route >
+				<flow-ref doc:name="restallproduct" doc:id="1378eaf9-bc41-48ce-acc2-cdedc8f0b038" name="consumerestFlow"/>
+			</route>
+			<route >
+				<flow-ref doc:name="soapallproducts" doc:id="2bb61753-691a-461c-a4ac-b81b32074f67" name="consumersoapFlow"/>
+			</route>
+			<route >
+				<flow-ref doc:name="databaseallproducts" doc:id="926a5700-8793-451c-b855-b0fb5c4794db" name="databaseFlow"/>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="6405be49-7cd0-4f4a-9586-07072514c76f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="56473e30-bf84-427b-bec4-9f4aff2e19d1" >
+		<wsc:connection wsdlLocation="http://localhost:6060/soap/ws/products.wsdl" service="ProductServicePortService" port="ProductServicePortSoap11" address="http://localhost:6060/soap/ws">
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<flow name="consumersoapFlow" doc:id="da2c635a-353b-447d-9af8-6ad2fa286e4a" >
+		<parse-template doc:name="Parse Template" doc:id="add83fa0-f684-4deb-af04-47e67e2ccd14" location="getallproducts.xml"/>
+		<wsc:consume doc:name="Consume" doc:id="df9c7ace-d141-439e-a910-6c32bae2be0b" config-ref="Web_Service_Consumer_Config" operation="getAllProducts"/>
+		<ee:transform doc:name="Transform Message" doc:id="ae7da072-5017-4036-b84f-b914c4d90016" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload.body.getAllProductsResponse.products.*product]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
